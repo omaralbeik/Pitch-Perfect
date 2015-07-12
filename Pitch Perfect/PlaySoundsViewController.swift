@@ -39,12 +39,14 @@ class PlaySoundsViewController: UIViewController, AVAudioPlayerDelegate {
     }
     
     @IBAction func slowPlayButtonTapped(sender: UIButton) {
+        audioPlayer.currentTime = 0.0
         turnOffAllButtons()
         slowPlayButton.setImage(UIImage(named: "slowOnButton"), forState: .Normal)
         playAudio(0.5)
     }
     
     @IBAction func fastPlayButtonTapped(sender: UIButton) {
+        audioPlayer.currentTime = 0.0
         turnOffAllButtons()
         fastPlayButton.setImage(UIImage(named: "fastOnButton"), forState: .Normal)
         playAudio(2.4)
@@ -63,10 +65,7 @@ class PlaySoundsViewController: UIViewController, AVAudioPlayerDelegate {
     }
     
     func playAudioWithVariablePitch(pitch: Float) {
-        audioPlayer.stop()
-        audioEngine.stop()
-        audioEngine.reset()
-        
+        stopAudio()
         var audioPlayerNode = AVAudioPlayerNode()
         audioEngine.attachNode(audioPlayerNode)
         
@@ -86,9 +85,7 @@ class PlaySoundsViewController: UIViewController, AVAudioPlayerDelegate {
     @IBAction func stopButtonTapped(sender: UIButton) {
         turnOffAllButtons()
         if let audioPlayer = audioPlayer {
-            audioPlayer.stop()
-            audioEngine.stop()
-            audioEngine.reset()
+            stopAudio()
         }
     }
     
@@ -101,16 +98,22 @@ class PlaySoundsViewController: UIViewController, AVAudioPlayerDelegate {
     
     func audioPlayerDidFinishPlaying(player: AVAudioPlayer!, successfully flag: Bool) {
         turnOffAllButtons()
+        stopAudio()
+    }
+    
+    func stopAudio() {
+        audioPlayer.stop()
+        audioEngine.stop()
+        audioEngine.reset()
     }
     
     
     func playAudio(speed: Float) {
+        stopAudio()
         audioPlayer.rate = speed
-        audioPlayer.stop()
         audioPlayer.prepareToPlay()
         audioPlayer.play()
-        audioEngine.stop()
-        audioEngine.reset()
+
     }
     
 }

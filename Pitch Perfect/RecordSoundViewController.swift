@@ -19,8 +19,8 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate {
     var recordedAudio: RecordedAudio!
     
     override func viewWillAppear(animated: Bool) {
-        recordingLabel.hidden = true
         stopButon.hidden = true
+        recordingLabel.text = "tap to record"
         recordButton.setImage(UIImage(named: "micOffButton"), forState: .Normal)
     }
     
@@ -35,7 +35,7 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate {
     @IBAction func recordButtonTapped(sender: UIButton) {
         
         recordButton.setImage(UIImage(named: "micOnButton"), forState: .Normal)
-        recordingLabel.hidden = false
+        recordingLabel.text = "recording"
         stopButon.hidden = false
         
         let dirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0] as! String
@@ -67,9 +67,7 @@ class RecordSoundViewController: UIViewController, AVAudioRecorderDelegate {
     func audioRecorderDidFinishRecording(recorder: AVAudioRecorder!, successfully flag: Bool) {
         
         if flag {
-            recordedAudio = RecordedAudio()
-            recordedAudio.filePath = recorder.url
-            recordedAudio.title = recorder.url.lastPathComponent
+            recordedAudio = RecordedAudio(path: recorder.url, title: recorder.url.lastPathComponent!)
             
             self.performSegueWithIdentifier("toPlayViewSegue", sender: recordedAudio)
         } else {
